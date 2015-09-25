@@ -1,0 +1,17 @@
+[user]
+	name = Jim Nanney
+	email = jnanney@gmail.com
+[core]
+	excludesfile = ~/.tools/gitignore_global
+[color]
+    ui = auto
+[alias]
+    sts = status -sb
+    head = !git l -1
+    h = !git head
+	ctags = !$(git rev-parse --git-dir)/hooks/ctags
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f
+[init]
+    templatedir = ~/.tools/git_template

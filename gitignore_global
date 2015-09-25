@@ -1,0 +1,6 @@
+*.swp
+.ruby-gemset
+*~
+.project
+.DS_Store
+.ruby-version
