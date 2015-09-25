@@ -43,6 +43,8 @@ if [ ! -d "$HOME/.rbenv" ]; then
 fi
 
 # Setup my vim plugins
+mkdir -p $HOME/.vim/bundle $HOME/.vim/autoload
+
 [ ! -e "$HOME/.vim/autoload/pathogen.vim" ] && \
     mkdir -p ~/.vim/autoload ~/.vim/bundle && \
     curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
