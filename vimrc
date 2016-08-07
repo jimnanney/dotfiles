@@ -122,7 +122,7 @@ nmap <space>' ciw'<c-r>"'<esc>
 " --------------------
 
 set t_Co=256 " 256 colors
-set background=dark
+set background=light
 let g:solarized_termcolors = 256 
 let g:solarized_termtrans = 1
 let g:solarized_degrade = 1
@@ -366,7 +366,8 @@ function! PromoteToLet()
   :normal ==
 endfunction
 :command! PromoteToLet :call PromoteToLet()
-:map <leader>p :PromoteToLet<cr>
+":map <leader>p :PromoteToLet<cr>
+:noremap <leader>p :!ruby -rminitest/pride *_test.rb<cr>
 
 " Function: ExtractVariable {{{1
 " ------------------------

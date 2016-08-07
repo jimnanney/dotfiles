@@ -68,3 +68,5 @@ export EDITOR=/usr/local/bin/vim
 #export M2=$M2_HOME/bin
 #export ANT_HOME=$HOME/apache-ant-1.8.3
 #export PATH=$PATH:$M2:$ANT_HOME/bin
+#export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+

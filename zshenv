@@ -5,5 +5,5 @@
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 #[[ -s "$HOME/.allshells" ]] && source "$HOME/.allshells"
 
-
+#xport PATH="/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH="$HOME/.rbenv/bin:$HOME/bin:$HOME/Applications:/usr/local/bin:/usr/local/sbin:/usr/local/git/bin:/usr/local/heroku/bin:/opt/local/bin:/opt/local/sbin:$PATH:/usr/texbin"
