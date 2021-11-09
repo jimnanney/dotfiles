@@ -23,12 +23,19 @@ ln -s $TOOLS/vimrc $HOME/.vimrc
 ln -s $TOOLS/zshrc $HOME/.zshrc
 ln -s $TOOLS/zshenv $HOME/.zshenv
 
-if [ ! -d "$HOME/.nvm" ]; then 
+if [ "$OS" = "Darwin" ]; then
+    if [ ! -e "/usr/local/bin/brew" ]; then
+        echo "Installing homebrew"
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
+fi
+if [ ! -d "$HOME/.nvm" ]; then
   # install nvm
   git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
   # install node 4.0.0
   source $HOME/.nvm/nvm.sh
-  nvm install 4.0.0
+  nvm install node
+  nvm use node
 fi
 
 if [ ! -d "$HOME/.rbenv" ]; then
@@ -37,8 +44,8 @@ if [ ! -d "$HOME/.rbenv" ]; then
         git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
         export PATH="$HOME/.rbenv/bin:$PATH"
         eval "$(rbenv init -)"
-        rbenv install 2.2.3
-        rbenv global 2.2.3
+        rbenv install 2.4.2
+        rbenv global 2.4.2
     fi
 fi
 

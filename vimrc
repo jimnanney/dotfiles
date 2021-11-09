@@ -1,36 +1,121 @@
+﻿"
+set nocompatible
+filetype off
+
+" Section: Encoding {{{1
+" ----------------------
+set encoding=utf-8
+scriptencoding utf-8
+set termencoding=utf-8
+set fenc=utf-8
+"set listchars=trail:⛵
+"set listchars=tab:>\ ,trail:⛵,extends:>,precedes:<,nbsp:+
+"set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+"set list
 " Most of this is taken from Gary Bernhardt's .vimrc
 " available from here: https://github.com/garybernhardt/dotfiles/blob/master/.vimrc
 
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-call pathogen#infect()
+" Support for ruby def end, do end etc
+runtime macros/matchit.vim
+
+" Section: Plugins {{{1
+" ----------------------
+set rtp+=~/.vim/bundle/Vundle.vim
+"set rtp+=/usr/local/lib/python3.8/site-packages/powerline/bindings/vim
+call vundle#begin()
+Plugin 'vim-airline/vim-airline'
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'editorconfig/editorconfig'
+Plugin 'mattn/emmet-vim'
+Plugin 'othree/html5.vim'
+Plugin 'Quramy/tsuquyomi'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'jason0x43/vim-js-indent'
+Plugin 'tpope/vim-bundler'
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-projectionist'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'elixir-editors/vim-elixir'
+Plugin 'tpope/vim-dispatch'
+Plugin 'vim-ruby/vim-ruby'
+"Plugin 'dense-analysis/ale'
+call vundle#end()
+
+" Section: Folding {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FOLDING
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+function MyFoldText()
+  let length = v:foldend - v:foldstart
+  let line = getline(v:foldstart)
+  let sub = substitute(line, '/\*\|\*/\|{{{\d\=', '', 'g')
+  let foldtext = substitute(sub, '^\s\+\|\s\+$', '', 'g')
+  return v:folddashes . "+ ". foldtext . " (" . length . " lines) +" . v:folddashes
+endfunction
+
+set foldtext=MyFoldText()
+set fillchars="fold: ,diff:-"
 
 " Section: Options {{{1
 " ---------------------
-syntax enable
+" autoload plugins and indentation based on file type
 filetype plugin indent on
+" disable auto indent in typescript files
+let g:typescript_indent_disable = 1
+" set all emojis as full width unicode
+set emoji
+"enable syntax highlighting
+syntax enable
+" search for tag definitions in .gemtags as well
+set tags+=.gemtags
+set tags+=.git/tags
+" set the unnamed register to yank to the "* register for system clipboard
+set clipboard=unnamed
+" use line numbers in the gutter on the left side
 set number
-set nocompatible
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
 " remember more commands and search history
 set history=10000
+" expand tabs to spaces
 set expandtab
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+" set tabs stops to 2 characters
+set tabstop=2
+" overide defaults tabwidwiths when typing to 2 characters
+set shiftwidth=2
+set softtabstop=2
+" use autoindent
 set autoindent
+" always display a status line
 set laststatus=2
+" show matching braces, brackets, and parens
 set showmatch
+" show the matches as you type the search pattern
 set incsearch
+" highlight the search pattern
 set hlsearch
 " make searches case-sensitive only if they contain upper-case characters
 set ignorecase smartcase
 " highlight current line
 set cursorline
+" make the command mode : 2 lines high
 set cmdheight=2
+" when switching buffers use the window with the buffer open if it exists
 set switchbuf=useopen
+" use 5 cols for the line numbers in the gutter
 set numberwidth=5
+" always show the tab page line (top)
 set showtabline=2
+" sets the cols for a window to use, steals from other windows if this one is
+" smaller
 set winwidth=79
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
@@ -49,25 +134,41 @@ set showcmd
 set wildmode=longest,list
 " make tab completion for files/buffers act like bash
 set wildmenu
-"let mapleader=","
 set undodir=$HOME/.vim/undo
 set undolevels=1000
 set undoreload=10000
+" don't use two spaces after sentence end when joining lines
 set nojoinspaces
 " this fixes the O insert taking so long
 set timeout timeoutlen=1000 ttimeoutlen=100
+" use modelines in files if found
 set modeline
+" check 3 lines for modelines
 set modelines=3
+" ignore the patterns when expanding file globs
 set wildignore+=tmp/*,*.swp,*.zip,*.exe,*.class,*.jar,*.ear,*.war
+set wildignore+=*\\node_modules\\**
+" set the root search directory to first anscestor with a .git or if not found, the
+" current directory
 let g:ctrlp_working_path_mode='ra'
-let g:ctrlp_custom_igmore = {
-      \ 'dir': '\.git$\|\.hg$\|\.svn$\|classes$',
+" when indexing, ignore these patterns of files / directories
+let g:ctrlp_custom_ignore = {
+      \ 'dir': '\.git$\|\.hg$\|\.svn$\|classes$\|node_modules\|npm-packages-offline-cache\|tmp$\|pack\|pack-test$',
       \ 'file': '\.exe$\|\.so$\|\.dll$\|\.class$\|\.jar$\|\.ear$\|.\war$',
       \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
       \ }
+" don't try to index more that 100,000 files
 let g:ctrlp_max_files = 100000
+" don't index deeper than 100 directories
 let g:ctrlp_max_depth = 100
-let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+" if indexing takes too long, you can use the git repo ls-files to get the
+" list of files to index 
+"let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+if exists("g:ctrlp_user_command")
+  unlet g:ctrlp_user_command
+endif
+set grepprg=git\ grep\ -nI
+
 " Section: Autocmds {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM AUTOCMDS
@@ -76,12 +177,6 @@ augroup vimrcEx
   " Clear all autocmds in the group
   autocmd!
   autocmd FileType text setlocal textwidth=78
-  "autocmd FileType vim set foldmethod=marker foldenable
-
-  "autocmd BufNewFile,BufRead *.hbs set ft=handlebars
-
-  " have to work with VB .net so add these here
-  autocmd BufNewFile,BufRead *.vb set ft=vbnet
   au BufNewFile,BufReadPost *.coffee setl shiftwidth=2 expandtab sts=2
 
   " Jump to last cursor position unless it's invalid or in an event handler
@@ -92,20 +187,24 @@ augroup vimrcEx
 
   "for ruby, autoindent with two spaces, always expand tabs
   autocmd FileType ruby,haml,eruby,yaml,html,sass,cucumber,html.handlebars,html.moustache set ai sw=2 sts=2 et
-  autocmd FileType javascript set ai sw=2 sts=2 nobomb
+  autocmd FileType javascript set ai sw=2 sts=2 nobomb et
+  autocmd FileType javascript.jsx set ai sw=2 sts=2 nobomb et
+  autocmd FileType typescript nmap <buffer> <Leader>. :call OpenTestAlternateTS()<cr>
+  autocmd FileType typescript nmap <buffer> <Leader>t :call RunMochaTest()<cr>
+  autocmd FileType typescript nmap <buffer> <Leader>T :call RunSingleMochaTest()<cr>
+  autocmd FileType typescript nmap <buffer> <Leader>i :TsuImport<cr>
+  autocmd FileType typescript nmap <buffer> <Leader>h :echo tsuquyomi#hint<cr>
 
-  autocmd! BufRead,BufNewFile *.sass setfiletype sass 
-  autocmd BufRead,BufNewFile {Guardfile,Gemfile,Rakefile} set filetype=ruby
+  autocmd BufRead,BufNewFile {*.ts,*.tsx} setlocal filetype=typescript
+  autocmd BufRead,BufNewFile *.sass setlocal filetype=sass
+  autocmd BufRead,BufNewFile {Guardfile,Gemfile,Rakefile} setlocal filetype=ruby
 
   autocmd BufRead *.md  set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.mkd  set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.markdown  set ai formatoptions=tcroqn2 comments=n:&gt;
 
-  " Indent p tags
-  " autocmd FileType html,eruby if g:html_indent_tags !~ '\\|p\>' | let g:html_indent_tags .= '\|p\|li\|dt\|dd' | endif
-
   " Don't syntax highlight markdown because it's often wrong
-  autocmd! FileType mkd setlocal syn=off
+  autocmd FileType mkd setlocal syn=off
 
   " Leave the return key alone when in command line windows, since it's used
   " to run commands there.
@@ -114,28 +213,27 @@ augroup vimrcEx
   autocmd BufWritePost .vimrc source $MYVIMRC
 augroup END
 
-" Set space quote to wrap a word in quotes
-nmap <space>" ciw"<c-r>""<esc>
-nmap <space>' ciw'<c-r>"'<esc>
-
 " Section: Colors {{{1
 " --------------------
 
 set t_Co=256 " 256 colors
-set background=light
-let g:solarized_termcolors = 256 
-let g:solarized_termtrans = 1
+set background=dark
+let g:solarized_termcolors = 256
+let g:solarized_termtrans = 0
 let g:solarized_degrade = 1
-let g:solarized_bold = 1 
+let g:solarized_bold = 1
 let g:solarized_underline = 1
 let g:solarized_italic = 0
-let g:solarized_contrast = "high" 
+let g:solarized_contrast = "high"
 let g:solarized_visibility= "high"
 
+let g:jsx_ext_required = 0
+"colorscheme badwolf
+colorscheme railscasts
+"colorscheme inori
 "colorscheme rubyblue
-colorscheme solarized 
+"colorscheme solarized
 "colorscheme detailed
-set listchars=trail:⛵
 
 " hi Comment ctermfg=67 ctermbg=23
 "hi VimLineComment ctermfg=66 ctermbg=23
@@ -147,9 +245,17 @@ set listchars=trail:⛵
 " Section: Misc Key Maps {{{1
 " ---------------------------
 
-imap <c-h> <c-o>^<script id="<c-o>$" type="text/x-handlebars-template"><cr></script><cr><c-o>2-<c-o>$<cr>
-map <leader>y "*y
-map <leader>] :!ruby ~/bin/test_runner.rb<cr>
+" Set space quote to wrap a word in quotes
+nnoremap <space>" ciw"<c-r>""<esc>
+nnoremap <space>' ciw'<c-r>"'<esc>
+
+inoremap <c-h> <c-o>^<script id="<c-o>$" type="text/x-handlebars-template"><cr></script><cr><c-o>2-<c-o>$<cr>
+noremap <leader>y "*y
+noremap <leader>] :!ruby ~/bin/test_runner.rb<cr>
+
+nnoremap n nzzzv
+nnoremap N Nzzzv
+"nnoremap J mzJ`z
 
 " Move around splits with <c-hjkl>
 nnoremap <c-j> <c-w>j
@@ -157,7 +263,7 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 " Insert a hash rocket with <c-l>
-imap <c-l> <space>=><space>
+inoremap <c-l> <space>=><space>
 " Can't be bothered to understand ESC vs <c-c> in insert mode
 imap <c-c> <esc>
 " Clear the search buffer when hitting return
@@ -225,60 +331,93 @@ function! ShowRoutes()
   " Delete empty trailing line
   :normal dd
 endfunction
-map <leader>gR :call ShowRoutes()<cr>
-map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
-map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
-map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
-map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
-map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
-map <leader>gp :CommandTFlush<cr>\|:CommandT public<cr>
-map <leader>gs :CommandTFlush<cr>\|:CommandT public/stylesheets/sass<cr>
-map <leader>gf :CommandTFlush<cr>\|:CommandT features<cr>
-map <leader>gg :topleft 100 :split Gemfile<cr>
-map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
-map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
-map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
+
+nnoremap <leader>; :CtrlPTag<cr>
+noremap <leader>gR :call ShowRoutes()<cr>
+noremap <leader>gv :CtrlP app/views<cr>
+noremap <leader>gc :CtrlP app/controllers<cr>
+noremap <leader>gm :CtrlP app/models<cr>
+noremap <leader>gh :CtrlP app/helpers<cr>
+noremap <leader>gl :CtrlP lib<cr>
+noremap <leader>gp :CtrlP public<cr>
+noremap <leader>gs :CtrlP app/services<cr>
+noremap <leader>gf :CtrlP features<cr>
+noremap <leader>gg :topleft 100 :split Gemfile<cr>
+noremap <leader>F :CtrlP %%<cr>
 
 " Section: Switch between test and production code {{{1
 " ------------------------
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SWITCH BETWEEN TEST AND PRODUCTION CODE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! OpenTestAlternateTS()
+    let new_file = AlternateForCurrentTSFile()
+    exec ':e ' . new_file
+endfunction
+
 function! OpenTestAlternate()
   let new_file = AlternateForCurrentFile()
   exec ':e ' . new_file
 endfunction
+
+function! AlternateForCurrentTSFile()
+  let current_file = expand("%")
+  let new_file = current_file
+  let in_spec = match(current_file, '^app/javascript/test') != -1
+  let going_to_spec = !in_spec
+  if going_to_spec
+    let new_file = substitute(new_file, '^app/javascript/src/\(.*\).\(ts[x]\?\)$', 'app/javascript/test/\1Test.\2','')
+  else
+    let new_file = substitute(new_file, '^app/javascript/test/\(.*\)Test.\(ts[x]\?\)$', 'app/javascript/src/\1.\2','')
+  endif
+  return new_file
+endfunction
+
 function! AlternateForCurrentFile()
   let current_file = expand("%")
   let new_file = current_file
-  let in_spec = match(current_file, '^spec/') != -1
+  let in_spec = match(current_file, '\(^spec/\|^test/\)') != -1
   let going_to_spec = !in_spec
   let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') || match(current_file, '\<helpers\>') != -1
+  let using_rspec = filereadable("spec/spec_helper.rb")
   if going_to_spec
     if in_app
-      let new_file = substitute(new_file, '^app/', '', '')
+      let new_file = substitute(new_file, '^lib/', '', '')
     end
-    let new_file = substitute(new_file, '\.rb$', '_spec.rb', '')
-    let new_file = 'spec/' . new_file
+
+    if using_rspec
+      let new_file = substitute(new_file, '\.rb$', '_spec.rb', '')
+      let new_file = 'spec/' . new_file
+    else
+      let new_file = substitute(new_file, '\.rb$', '_test.rb', '')
+      let new_file = 'test/' . new_file
+    end
   else
-    let new_file = substitute(new_file, '_spec\.rb$', '.rb', '')
-    let new_file = substitute(new_file, '^spec/', '', '')
+    if using_rspec
+      let new_file = substitute(new_file, '_spec\.rb$', '.rb', '')
+      let new_file = substitute(new_file, '^spec/', '', '')
+    else
+      let new_file = substitute(new_file, '_test\.rb$', '.rb', '')
+      let new_file = substitute(new_file, '^test/', '', '')
+    end
+
     if in_app
-      let new_file = 'app/' . new_file
+      let new_file = 'lib/' . new_file
     end
   endif
   return new_file
 endfunction
+
 nnoremap <leader>. :call OpenTestAlternate()<cr>
 
-"Section: Running Tests {{{1
+" Section: Running Tests {{{1
 " ------------------------
-map <leader>t :call RunTestFile()<cr>
-map <leader>T :call RunNearestTest()<cr>
-map <leader>a :call RunTests('')<cr>
-map <leader>c :w\|:!script/features<cr>
-map <leader>w :w\|:!script/features --profile wip<cr>
-map <leader>u :!ruby %
+noremap <leader>t :call RunTestFile()<cr>
+noremap <leader>T :call RunNearestTest()<cr>
+noremap <leader>a :call RunTests('')<cr>
+noremap <leader>c :w\|:!script/features<cr>
+noremap <leader>w :w\|:!script/features --profile wip<cr>
+noremap <leader>u :!ruby %
 
 function! RunTestFile(...)
     if a:0
@@ -288,7 +427,7 @@ function! RunTestFile(...)
     endif
 
     " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\)$') != -1
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|_test.rb\)$') != -1
     if in_test_file
         call SetTestFile()
     elseif !exists("t:grb_test_file")
@@ -299,7 +438,12 @@ endfunction
 
 function! RunNearestTest()
     let spec_line_number = line('.')
-    call RunTestFile(":" . spec_line_number . " -b")
+    if filereadable("spec/spec_helper.rb")
+      let opts = " -b"
+    else
+      let opts = ""
+    end
+    call RunTestFile(":" . spec_line_number . opts)
 endfunction
 
 function! SetTestFile()
@@ -309,6 +453,11 @@ endfunction
 
 function! RunTests(filename)
     " Write the file and run tests for the given filename
+    if match(a:filename, '\feature_spec.rb$') != -1
+      let skip_pack = ""
+    else
+      let skip_pack = "SKIP_WEBPACKER=true "
+    endif
     :w
     :silent !echo;echo;echo;echo;echo;echo;echo;echo;echo;echo
     :silent !echo;echo;echo;echo;echo;echo;echo;echo;echo;echo
@@ -322,11 +471,57 @@ function! RunTests(filename)
         if filereadable("script/test")
             exec ":!script/test " . a:filename
         elseif filereadable("Gemfile")
-            exec ":!bundle exec rspec --color " . a:filename
+          if filereadable("spec/spec_helper.rb")
+            exec ":!" . skip_pack . "SHOW_CHROME=true bundle exec rspec --color " . a:filename
+          else
+            exec ":!" . skip_pack . "SHOW_CHROME=true HEADLESS=false bundle exec rails test " . a:filename
+          end
         else
-            exec ":!rspec --color " . a:filename
+            exec ":!" . skip_pack . "rspec --color " . a:filename
         end
     end
+endfunction
+
+function! RunMochaTest()
+  let current_file = expand('%')
+  let not_in_spec = match(current_file, '^app/javascript/test') == -1
+  if not_in_spec
+    let current_file = './' . shellescape(AlternateForCurrentTSFile())
+  endif
+  exec '!export NODE_ENV=test; export TZ=America/New_York; yarn run mocha --opts ./app/javascript/test/mocha.opts ' . current_file
+endfunction
+
+function! RunSingleMochaTest()
+  let current_file = expand('%')
+  let not_in_spec = match(current_file, '^app/javascript/test/') == -1
+  if not_in_spec
+    if exists("s:lastsingletestrun")
+      exec s:lastsingletestrun
+    endif
+    return
+  endif
+  let position = line('.')
+  let lastjumppos = line('.')
+  let desc = ""
+  while 1
+    keepjumps normal! [{
+    if line('.') == lastjumppos
+      break
+    endif
+    let lastjumppos = line('.')
+    let matches = matchlist(getline('.'), '\(describe\|it\|context\)\s*(\s*[''"]\(.*\)[''"\]\s*,')
+    if len(matches[2]) > 0
+      if len(desc) > 0
+        let desc = ' ' . desc
+      endif
+      let desc = matches[2] . desc
+    endif
+  endwhile
+  exec 'keepjumps normal! ' . position . 'G'
+  let current_file = "./" . shellescape(current_file)
+  let args = ' -g "' . shellescape(desc, 1) . '"'
+  let s:lastsingletestrun = ':!export NODE_ENV=test; export TZ=America/New_York; yarn run mocha --opts ./app/javascript/test/mocha.opts ' .current_file . ' -g ' . shellescape(desc, 1)
+  exec s:lastsingletestrun
 endfunction
 
 " Section: MD5 {{{1
@@ -359,15 +554,28 @@ map <leader>n :call RenameFile()<cr>
 " PROMOTE VARIABLE TO RSPEC LET
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! PromoteToLet()
-  :normal! dd
-  " :exec '?^\s*it\>'
-  :normal! P
-  :.s/\(\w\+\) = \(.*\)$/let(:\1) { \2 }/
-  :normal ==
+  let position = line('.')
+  let results = FindBlock()
+  if results == -1
+    :keepjumps normal! dd
+    :call search('describe\|context', 'b')
+    :keepjumps normal! p
+    :.s/\(\w\+\) = \(.*\)$/let(:\1) { \2 }/
+    :keepjumps normal ==
+    exec 'keepjumps normal! ' . position . 'G'
+  else
+    let @a = 'let(:'
+    keepjumps normal! 0wvaw"Axdw
+    let @a .= ") do\n"
+    exec 'keepjumps normal! V' . results . 'G"Ax'
+    let @a .= "end\n"
+    call search('describe\|context', 'b')
+    exec 'keepjumps normal! "agp'
+    :keepjumps normal! k%V%=
+  endif
 endfunction
 :command! PromoteToLet :call PromoteToLet()
-":map <leader>p :PromoteToLet<cr>
-:noremap <leader>p :!ruby -rminitest/pride *_test.rb<cr>
+:noremap <leader>p :PromoteToLet<cr>
 
 " Function: ExtractVariable {{{1
 " ------------------------
@@ -421,6 +629,12 @@ function! InlineVariable()
 endfunction
 nnoremap <leader>ri :call InlineVariable()<cr>
 
+function! ExtractMethod()
+  normal "ay
+  let pattern = @a
+
+endfunction
+
 " Command: OpenChangedFiles - Open a split for each dirty file in git {{{1
 " ------------------------
 function! OpenChangedFiles()
@@ -467,8 +681,85 @@ function! Incr()
     normal `<
 endfunction
 
+function! RunMochaTest()
+  let current_file = expand('%%')
+  let not_in_spec = match(current_file, '^app/javascript/test/') == -1
+  if not_in_spec
+    let current_file = AlternateForTSFile()
+  endif
+  echom '!yarn run mocha ' . current_file
+endfunction
+
+function! RunSingleMochaTest()
+  let not_in_spec = match(current_file, '^app/javascript/test/') == -1
+  if not_in_spec
+    if exists(s:lasttestrun)
+      echom "re-running last test"
+      echom s:lastsingletestrun
+    endif
+    return
+  endif
+  let position = line('.')
+  let lastjumppos = line('.')
+  let desc = ""
+  while 1
+    keepjumps normal! [{
+    if line('.') == lastjumppos
+      break
+    endif
+    let lastjumppos = line('.')
+    let matches = matchlist(getline('.'),'\(describe\|it\)\s*(\s*[''"]\(.*\)[''"]\s*,')
+    if len(matches[2]) > 0
+      if len(desc) > 0
+        let desc = ' ' . desc
+      endif
+      let desc = matches[2] . desc
+    endif
+  endwhile
+  execute 'keepjumps normal! '.position.'G' 
+  let s:lastsingletestrun = '!yarn run mocha '.expand('%%') . ' -g "' . desc . '"'
+  echom s:lastsingletestrun
+endfunction
+
+function! OpenTestAlternateTS()
+  let new_file = AlternateForCurrentTSFile()
+  exec ':e ' . new_file
+endfunction
+
+function! AlternateForCurrentTSFile()
+  let current_file = expand("%")
+  let new_file = current_file
+  let in_spec = match(current_file, '^app/javascript/test/') != -1
+  let going_to_spec = !in_spec
+  if going_to_spec
+    let new_file = substitute(new_file, '^app/javascript/src/\(.*\).\(ts[x]\?\)$', 'app/javascript/test/\1Test.\2', '')
+  else
+    let new_file = substitute(new_file, '^app/javascript/test/\(.*\)Test.\(ts[x]\?\)', 'app/javascript/src/\1.\2', '')
+  endif
+  return new_file
+endfunction
 "===============================================================================
 " Function Keymappings
 "===============================================================================
 vnoremap <C-n> :call Incr()<CR>
+
+" javascript conceals
+let g:javascript_conceal_function             = "ƒ"
+let g:javascript_conceal_null                 = "ø"
+let g:javascript_conceal_this                 = "@"
+let g:javascript_conceal_return               = "⇚"
+let g:javascript_conceal_undefined            = "¿"
+let g:javascript_conceal_NaN                  = "ℕ"
+let g:javascript_conceal_prototype            = "¶"
+let g:javascript_conceal_static               = "•"
+let g:javascript_conceal_super                = "Ω"
+let g:javascript_conceal_arrow_function       = "⇒"
+"let g:javascript_conceal_noarg_arrow_function = "🞅"
+"let g:javascript_conceal_underscore_arrow_function = "🞅"
+
+abbr thier their
+abbr recieve receive
+abbr reciept receipt
+
+hi Special                   guifg=#2a71dc ctermfg=32
 
