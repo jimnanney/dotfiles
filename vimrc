@@ -210,7 +210,7 @@ augroup vimrcEx
   " to run commands there.
   autocmd! CmdwinEnter * :unmap <cr>
   autocmd! CmdwinLeave * :call MapCR()
-  autocmd BufWritePost .vimrc source $MYVIMRC
+  autocmd BufWritePost $MYVIMRC source $MYVIMRC
 augroup END
 
 " Section: Colors {{{1
