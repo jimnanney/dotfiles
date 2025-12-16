@@ -1,0 +1,12 @@
+mkdir workspace
+brew update
+brew install rbenv ruby-build neovim ctags fzf nvm neovim postgresql@15 ripgrep tmux gh vim stow jq
+rbenv install 3.4.7
+rbenv global 3.4.7
+ssh-keygen -t rsa -C "jnanney@gmail.com"
+cat .ssh/id_rsa.pub|pbcopy
+mkdir workspace
+cd workspace
+git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+gem install bundler tmuxinator neovim
+gem update --system 3.7.2

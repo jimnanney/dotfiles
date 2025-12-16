@@ -1,0 +1,9 @@
+.solargraph.yml
+*.swp
+.ruby-gemset
+.gemtags
+*~
+.project
+.DS_Store
+.ruby-version
+.yardic/

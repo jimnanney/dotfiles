@@ -1,0 +1,6 @@
+.vim/undo/**/*
+.vim/bundle/**/*
+.vim/.netrwhist*
+.yarnrc
+bin/chromedriver*
+lazy-lock.json

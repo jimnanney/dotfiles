@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'json'
+require 'net/http'
+require 'tmpdir'
+
+class ChromedriverDownloader
+  def self.download
+    new.download
+  end
+
+  def download
+    return if File.exist?("~/bin/chromedriver-#{major_version}")
+
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        fetch
+        unzip
+        install
+        symlink
+      end
+    end
+  end
+
+  private
+
+  def fetch
+    `curl #{latest_platform_uri} > chromedriver.zip`
+  end
+
+  def unzip
+    `unzip chromedriver.zip`
+  end
+
+  def install
+    FileUtils.mv("./chromedriver-#{platform}/chromedriver", install_file)
+  end
+
+  def symlink
+    File.unlink(symlink_name) if File.exist?(symlink_name)
+    File.symlink(install_file.to_s, symlink_name)
+  end
+
+  def symlink_name
+    "#{ENV["HOME"]}/bin/chromedriver"
+  end
+
+  def chrome_version
+    @chrome_version ||= (`'/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome' --version`).gsub(/[^0-9\.]/, '')
+  end
+
+  def platform
+    "mac-arm64"
+  end
+
+  def major_version
+    chrome_version.split('.')[0]
+  end
+
+  def latest_platform_uri
+    response = Net::HTTP.get(URI(download_json_api_url))
+    parsed = JSON.parse(response)
+    urls = parsed.dig("milestones", "#{major_version}", "downloads", "chromedriver")
+    urls.find { |i| i["platform"] == platform}["url"]
+  end
+
+  def download_json_api_url
+    "https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json"
+  end
+
+  def install_file
+    "#{ENV["HOME"]}/bin/chromedriver-#{major_version}"
+  end
+end
+
+ChromedriverDownloader.download if __FILE__ == $PROGRAM_NAME

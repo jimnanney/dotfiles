@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# git churn app/models
+# git churn --since='1 month ago'
+
+set -e
+git log --all -M -C --name-only --format='format:' "$@" | sort |grep -v '^$'| uniq -c | sort -n
