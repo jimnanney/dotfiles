@@ -2,8 +2,6 @@
   name = Jim Nanney
   email = jnanney@gmail.com
   signingkey = ~/.ssh/id_rsa.pub
-[http]
-  sslVerify = false
 [core]
   excludesfile = ~/.config/git/ignore
   attributesfile = ~/.config/git/attributes
@@ -36,3 +34,5 @@
   mergeoptions = --ff-only
 [gpg]
   format = ssh
+[include]
+  path = ~/.config/git/work-config
