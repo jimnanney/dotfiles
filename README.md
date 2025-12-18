@@ -26,6 +26,6 @@ For example, I have a dotfiles and dotfiles-work repo. To install all the packag
 cd ~/dotfiles
 stow `ls -d */`
 cd ~/dotfiles-work
-stor `ls -d */`
+stow `ls -d */`
 ```
 
