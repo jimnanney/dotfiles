@@ -58,7 +58,7 @@ vim.keymap.set('n', '<leader>gv', ":lua require('telescope.builtin').find_files(
 vim.keymap.set('v', '<leader>u', 'c<C-R>=trim(system(\'ruby -e "require \\"securerandom\\"; puts SecureRandom.uuid"\'))<cr><esc>', { desc = '[U]uid' })
 vim.keymap.set('v', '<leader>U', 'c<C-R>=trim(system(\'ruby -e "require \\"securerandom\\"; puts SecureRandom.uuid.tr(\\"-\\", \\"\\")"\'))<cr><esc>', { desc = '[U]uid' })
 -- when opening a file, go to the last cursor line
-vim.opt.grepprg=[[git grep -n $*]]
+vim.opt.grepprg=[[git grep -n --column $*]]
 vim.api.nvim_create_autocmd('BufRead', {
   callback = function(opts)
     vim.api.nvim_create_autocmd('BufWinEnter', {

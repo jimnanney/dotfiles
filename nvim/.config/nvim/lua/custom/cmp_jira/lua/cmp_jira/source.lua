@@ -80,7 +80,7 @@ cmp_jira.setup = function()
                 description = string.gsub(description, "\r", "")
                 table.insert(items, {
                   label = string.format("#%s", jira_ticket.key),
-                  insertText = string.format("%s [%s]\n\n%s\n\n", jira_ticket.fields.summary, jira_ticket.key, description),
+                  insertText = string.format("[%s] %s \n\n%s\n\n", jira_ticket.key, jira_ticket.fields.summary, description),
                   documentation = {
                     kind = 'markdown',
                     value = string.format("# [%s] %s\n\n%s", jira_ticket.key, jira_ticket.fields.summary, description)
