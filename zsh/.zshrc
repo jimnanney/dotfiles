@@ -72,4 +72,4 @@ export KUBECONFIG=$HOME/.kubeconfig-prod
 export PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH"
 source <(fzf --zsh)
 source ~/.env
-[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
+which kubectl >/dev/null && source <(kubectl completion zsh)
