@@ -66,3 +66,11 @@ function repeat() {
 function kill_port {
   lsof -i :$1 | awk '{l=$2} END {print l}' | xargs kill
 }
+
+function find_flipper {
+  git log -G "Flipper\..+abled\?( |\():$1" --source --all -p --reverse
+}
+
+function current_flipper {
+  git grep -nE "Flipper\..+abled\?( |\():$1"
+}
