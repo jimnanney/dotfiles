@@ -1,3 +1,5 @@
+# use vi keybindings for the command line
+set -o vi
 ulimit -n 2048
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
@@ -8,19 +10,12 @@ ZSH_THEME="jimnanney"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(fzf git tmuxinator rbenv web-search zsh-autosuggestions)
+plugins=(fzf fzf-tab git tmuxinator rbenv web-search zsh-autosuggestions)
 source ~/.config/zsh/init-loader.sh
 ZSH_WEB_SEARCH_ENGINES=(
     ghe      "https://git.uscis.dhs.gov/search?q="
     rgems    "https://rubygems.org/search?query="
 )
-if type rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files'
-  export FZF_DEFAULT_OPTS='-m'
-fi
-
-source $ZSH/oh-my-zsh.sh
-
 # EXTENDED_GLOB Treat the `#', `~' and `^' characters as part of patterns for filename generation, etc
 #
 # NULL_GLOB If a pattern for filename generation has no matches, delete the pattern from the argument list
@@ -29,7 +24,7 @@ setopt EXTENDED_GLOB NULL_GLOB
 
 export HISTSIZE=100000
 export SAVESTSIZE=100000
-export HISTFILE=$XDG_CONFIG_HOME/zsh/history
+export HISTFILE=$HOME/.zsh_history
 
 # HIST_IGNORE_DUPS Do not enter command lines into the history list if they are duplicates of the previous event.
 #
@@ -39,6 +34,13 @@ export HISTFILE=$XDG_CONFIG_HOME/zsh/history
 # SHARE_HISTORY This option both imports new commands from the history file, and also causes your typed commands
 # to be appended to the history fil
 setopt EXTENDED_HISTORY HIST_IGNORE_DUPS SHARE_HISTORY
+
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+if type rg &> /dev/null; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+fi
+
+source $ZSH/oh-my-zsh.sh
 
 alias c='cd ~/workspace'
 alias gs='git status --short'
@@ -65,6 +67,5 @@ source ~/.env
 # kubernetes
 export KUBECONFIG=$HOME/.kubeconfig-prod
 which kubectl >/dev/null && source <(kubectl completion zsh)
+source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# use vi keybindings for the command line
-set -o vi
