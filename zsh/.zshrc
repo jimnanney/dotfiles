@@ -1,37 +1,13 @@
+ulimit -n 2048
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 export SHELL=$(which zsh)
 # Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-#ZSH_THEME="robbyrussell"
-#ZSH_THEME="jimnanney"
 ZSH_THEME="jimnanney"
-
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
-
-# Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-ulimit -n 2048
 plugins=(fzf git tmuxinator rbenv web-search zsh-autosuggestions)
 source ~/.config/zsh/init-loader.sh
 ZSH_WEB_SEARCH_ENGINES=(
@@ -45,6 +21,25 @@ fi
 
 source $ZSH/oh-my-zsh.sh
 
+# EXTENDED_GLOB Treat the `#', `~' and `^' characters as part of patterns for filename generation, etc
+#
+# NULL_GLOB If a pattern for filename generation has no matches, delete the pattern from the argument list
+# instead of reporting an error
+setopt EXTENDED_GLOB NULL_GLOB
+
+export HISTSIZE=100000
+export SAVESTSIZE=100000
+export HISTFILE=$XDG_CONFIG_HOME/zsh/history
+
+# HIST_IGNORE_DUPS Do not enter command lines into the history list if they are duplicates of the previous event.
+#
+# HIST_IGNORE_SPACE Remove command lines from the history list when the first character on the line is a space,
+# or when one of the expanded aliases contains a leading space
+#
+# SHARE_HISTORY This option both imports new commands from the history file, and also causes your typed commands
+# to be appended to the history fil
+setopt EXTENDED_HISTORY HIST_IGNORE_DUPS SHARE_HISTORY
+
 alias c='cd ~/workspace'
 alias gs='git status --short'
 alias ga='git add -A'
@@ -52,24 +47,24 @@ alias gc='git commit'
 alias gl='git log -n 1'
 
 export EDITOR=$(which nvim)
+export VISUAL=$(which nvim)
 
-# export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export HOMEBREW_PREFIX=$(brew --prefix)
 export LDFLAGS="-L$(brew --prefix postgresql@15)/lib"
 export CPPFLAGS="-I$(brew --prefix postgresql@15)/include"
 export PKG_CONFIG_PATH="$(brew --prefix postgresql@15)/lib/pkgconfig"
-export PATH="$(brew --prefix)/bin:$(brew --prefix postgresql@15)/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH:$HOME/bin"
-#export PATH="/usr/local/opt/curl/bin:$PATH"
-#export HOMEBREW_FORCE_BREWED_CURL=1
-export RUBY_MAKE_OPTS="-j 1"
-# for autodetecting the Gemfile in the current or parent directories
-# export RUBYGEMS_GEMDEPS=-
+export PATH="$HOMEBREW_PREFIX/bin:$(brew --prefix postgresql@15)/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH:$HOME/bin"
+# export RUBY_MAKE_OPTS="-j 1"
+# older rails used SPRING - I don't like it ;)
 export DISABLE_SPRING=true
-export GH_HOST='git.uscis.dhs.gov'
 export LESSOPEN="lessopen.sh %s"
-export LESSclose="lessclose.sh %s %s"
-export KUBECONFIG=$HOME/.kubeconfig-prod
+export LESSCLOSE="lessclose.sh %s %s"
 export PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH"
 source <(fzf --zsh)
 source ~/.env
+# kubernetes
+export KUBECONFIG=$HOME/.kubeconfig-prod
 which kubectl >/dev/null && source <(kubectl completion zsh)
+
+# use vi keybindings for the command line
+set -o vi
