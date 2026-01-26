@@ -36,3 +36,5 @@
   format = ssh
 [include]
   path = ~/.config/git/work-config
+[pager]
+	branch = false
