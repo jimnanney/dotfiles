@@ -1,5 +1,3 @@
-# use vi keybindings for the command line
-set -o vi
 ulimit -n 2048
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
