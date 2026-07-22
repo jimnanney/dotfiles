@@ -57,6 +57,14 @@ vim.keymap.set('n', '<leader>gs', ":lua require('telescope.builtin').find_files(
 vim.keymap.set('n', '<leader>gv', ":lua require('telescope.builtin').find_files({ cwd='app/views' })<cr>", { desc = '[G]oto [V]iews' })
 vim.keymap.set('v', '<leader>u', 'c<C-R>=trim(system(\'ruby -e "require \\"securerandom\\"; puts SecureRandom.uuid"\'))<cr><esc>', { desc = '[U]uid' })
 vim.keymap.set('v', '<leader>U', 'c<C-R>=trim(system(\'ruby -e "require \\"securerandom\\"; puts SecureRandom.uuid.tr(\\"-\\", \\"\\")"\'))<cr><esc>', { desc = '[U]uid' })
+-- lsp
+vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = '[R]e[n]ame' })
+vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = '[C]ode [A]ction' })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[G]oto [D]efinition' })
+vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc =  '[G]oto [R]eferences' })
+vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = '[G]oto [I]mplementation' })
+vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, { desc = 'Type [D]efinition' })
+
 -- when opening a file, go to the last cursor line
 vim.opt.grepprg=[[git grep -n --column $*]]
 vim.api.nvim_create_autocmd('BufRead', {
