@@ -37,4 +37,8 @@
 [include]
   path = ~/.config/git/work-config
 [pager]
-	branch = false
+  branch = false
+[credential "https://github.com"]
+  helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+  helper = !/opt/homebrew/bin/gh auth git-credential

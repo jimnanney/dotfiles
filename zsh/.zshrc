@@ -12,7 +12,6 @@ ZSH_THEME="jimnanney"
 plugins=(fzf fzf-tab git tmuxinator rbenv web-search zsh-autosuggestions)
 source ~/.config/zsh/init-loader.sh
 ZSH_WEB_SEARCH_ENGINES=(
-    ghe      "https://git.uscis.dhs.gov/search?q="
     rgems    "https://rubygems.org/search?query="
 )
 # EXTENDED_GLOB Treat the `#', `~' and `^' characters as part of patterns for filename generation, etc
@@ -37,16 +36,14 @@ export EDITOR=$(which nvim)
 export VISUAL=$(which nvim)
 
 export HOMEBREW_PREFIX=$(brew --prefix)
-export LDFLAGS="-L$(brew --prefix postgresql@15)/lib"
-export CPPFLAGS="-I$(brew --prefix postgresql@15)/include"
-export PKG_CONFIG_PATH="$(brew --prefix postgresql@15)/lib/pkgconfig"
-export PATH="$HOMEBREW_PREFIX/bin:$(brew --prefix postgresql@15)/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH:$HOME/bin"
+# export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export PATH="$(brew --prefix)/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH:$HOME/bin:$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+export KUBECONFIG=$HOME/.kube/config
 # export RUBY_MAKE_OPTS="-j 1"
 # older rails used SPRING - I don't like it ;)
 export DISABLE_SPRING=true
 export LESSOPEN="lessopen.sh %s"
 export LESSCLOSE="lessclose.sh %s %s"
-export PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH"
 source ~/.env
 source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # zprof
